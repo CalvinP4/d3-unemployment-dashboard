@@ -16,6 +16,16 @@ d3.csv('data/FinalProjectOutput.csv').then(_data => {
     }).filter(d => {
         return !Object.values(d).includes(null);
     });
+    const lineChartConfig = {
+        parentElement: "#linechart",
+        containerWidth: 600,
+        containerHeight: 400,
+        margin: { top: 30, right: 30, bottom: 60, left: 50 },
+    };
+
+    // Initialize bar chart
+    lineChart = new BarChart(lineChartConfig, data, colorScale);
+    lineChart.updateVis(); // Call updateVis first for the bar chart
 
     console.log(data);
 });
