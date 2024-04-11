@@ -1,4 +1,4 @@
-let data, barChart, lineChart;
+let data, barChart, lineChart, colorScale;
 
 d3.csv('data/FinalProjectOutput.csv').then(_data => {
     data = _data.map(d => {
@@ -24,7 +24,7 @@ d3.csv('data/FinalProjectOutput.csv').then(_data => {
     };
 
     // Initialize bar chart
-    lineChart = new BarChart(lineChartConfig, data, colorScale);
+    lineChart = new barChart(lineChartConfig, data, colorScale);
     lineChart.updateVis(); // Call updateVis first for the bar chart
 
     console.log(data);
