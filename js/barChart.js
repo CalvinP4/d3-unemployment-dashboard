@@ -9,8 +9,8 @@ class BarChart {
     constructor(_config, _data, _colorScale, _dispatcher) {
         this.config = {
             parentElement: _config.parentElement,
-            containerWidth: _config.containerWidth || 500,
-            containerHeight: _config.containerHeight || 140,
+            containerWidth: _config.containerWidth || 800,
+            containerHeight: _config.containerHeight || 440,
             margin: _config.margin || { top: 5, right: 5, bottom: 20, left: 50 }
         };
         this.data = _data;
@@ -77,9 +77,9 @@ class BarChart {
         // Transform data
         let transformedData = group.map(g => {
             let metroValue = vis.data.filter(d => d.isMetro === 'True' && d[g])
-            .reduce((a, b) => a + b[g], 0);;
+                .reduce((a, b) => a + b[g], 0);;
             let nonMetroValue = vis.data.filter(d => d.isMetro === 'False' && d[g])
-            .reduce((a, b) => a + b[g], 0);;
+                .reduce((a, b) => a + b[g], 0);;
             return { group: g, metro: metroValue, nonMetro: nonMetroValue };
         });
 
@@ -89,7 +89,10 @@ class BarChart {
         // Generate series data
         vis.series = stack(transformedData);
 
-        console.log(vis.series);
+        vis.xValue = d => d.data["group"];
+        vis.yValue = d => d.data["metro"] + d.data["nonMetro"];
+
+        console.log("series",vis.series);
 
         vis.renderVis();
     }
@@ -100,20 +103,66 @@ class BarChart {
     renderVis() {
         let vis = this;
 
-        // Create groups for each series
-        let groups = vis.chart.selectAll("g")
-            .data(vis.series)
-            .enter().append("g")
-            .style("fill", function (d, i) { return vis.color(i); });
+        const group = ['transportation_cost', 'food_cost', 'healthcare_cost', 'childcare_cost', 'taxes'];
 
-        // Create rectangles within each group
-        groups.selectAll("rect")
+        // Transform data
+        let transformedData = group.map(g => {
+            let metroValue = vis.data.filter(d => d.isMetro === 'True' && d[g])
+                .reduce((a, b) => a + b[g], 0);;
+            let nonMetroValue = vis.data.filter(d => d.isMetro === 'False' && d[g])
+                .reduce((a, b) => a + b[g], 0);;
+            return { group: g, metro: metroValue, nonMetro: nonMetroValue };
+        });
+
+        // 2. Create scales
+        let x = d3.scaleBand()
+            .domain(group)
+            .range([0, vis.width])
+            .padding([0.2]);
+
+        let y = d3.scaleLinear()
+            .domain([0, 1000000000])
+            .range([vis.height, 0]);
+
+        let color = d3.scaleOrdinal()
+            .domain(["metro", "nonMetro"])
+            .range(["#d91f02", "#1b8e77"]);
+
+        // 3. Create a stack generator
+        let stack = d3.stack()
+            .keys(['metro', 'nonMetro']);
+
+        // 4. Use the stack generator to process your data
+        let series = stack(transformedData);
+
+        // 5. Create the bars
+        vis.chart.selectAll(".bar")
+            .data(series)
+            .enter().append("g")
+            .attr("fill", function (d) { 
+                return color(d.key); 
+            })
+            .selectAll("rect")
             .data(function (d) { return d; })
             .enter().append("rect")
-            .attr("x", function (d) { return vis.xScale(d.data.group); })
-            .attr("y", function (d) { return vis.yScale(d[1]); })
-            .attr("height", function (d) { return vis.yScale(d[0]) - vis.yScale(d[1]); })
-            .attr("width", vis.xScale.bandwidth());
+            .attr("x", function (d) { 
+                return x(d.data.group); 
+            })
+            .attr("y", function (d) { return y(d[1]); })
+            .attr("width", x.bandwidth())
+            .attr("height", function (d) { 
+                return y(d[0]) - y(d[1]); 
+            });
 
+        // Create the x axis
+        vis.svg.append("g")
+            .attr('class', 'axis x-axis')
+            .attr("transform", "translate(0," + vis.height + ")")
+            .call(vis.xAxis);
+
+        // Create the y axis
+        vis.svg.append("g")
+            .attr('class', 'axis y-axis')
+            .call(vis.yAxis);
     }
 }
