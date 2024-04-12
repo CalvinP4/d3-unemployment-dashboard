@@ -105,7 +105,6 @@ class BarChart {
 
         const group = ['transportation_cost', 'food_cost', 'healthcare_cost', 'childcare_cost', 'taxes'];
 
-        // Transform data
         let transformedData = group.map(g => {
             let metroValue = vis.data.filter(d => d.isMetro === 'True' && d[g])
                 .reduce((a, b) => a + b[g], 0);;
@@ -114,19 +113,15 @@ class BarChart {
             return { group: g, metro: metroValue, nonMetro: nonMetroValue };
         });
 
-        // 3. Create a stack generator
         let stack = d3.stack()
             .keys(['metro', 'nonMetro']);
 
-        // 4. Use the stack generator to process your data
         let series = stack(transformedData);
 
-        // Calculate the maximum value in your data
         let maxVal = d3.max(series, function(series) {
             return d3.max(series, function(d) { return d[1]; });
         });
 
-        // 2. Create scales
         let x = d3.scaleBand()
             .domain(group)
             .range([0, vis.width])
@@ -144,18 +139,16 @@ class BarChart {
             .domain(["metro", "nonMetro"])
             .range(["#d91f02", "#1b8e77"]);
 
-        // Create the x axis
         vis.chart.append("g")
             .attr('class', 'axis x-axis')
             .attr("transform", "translate(0," + vis.height + ")")
             .call(xAxis);
 
-        // Create the y axis
         vis.chart.append("g")
             .attr('class', 'axis y-axis')
             .call(yAxis);
 
-        // 5. Create the bars
+        // Create the bars
         vis.chart.selectAll(".bar")
             .data(series)
             .enter().append("g")
