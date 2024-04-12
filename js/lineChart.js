@@ -63,7 +63,7 @@ class LineChart {
             .attr('class', 'axis-title')
             .attr('x', 0)
             .attr('y', 0)
-            .attr('dy', '.71em').text('Value');
+            .attr('dy', '.71em').text('Count');
     }
 
     /**
@@ -71,23 +71,6 @@ class LineChart {
      */
     updateVis() {
         let vis = this;
-
-        // Static data
-        vis.data = [
-            { x: 1, y1: 5, y2: 7 },
-            { x: 2, y1: 8, y2: 6 },
-            { x: 3, y1: 4, y2: 2 },
-            { x: 4, y1: 10, y2: 8 }
-        ];
-
-        // Create scales
-        vis.xScale = d3.scaleLinear().domain([0, d3.max(vis.data, d => d.x)]).range([0, vis.width]);
-        vis.yScale = d3.scaleLinear().domain([0, d3.max(vis.data, d => Math.max(d.y1, d.y2))]).range([vis.height, 0]);
-        vis.colorScale = d3.scaleOrdinal(d3.schemeCategory10);
-
-        // Create line generators
-        vis.lineGenerator1 = d3.line().x(d => vis.xScale(d.x)).y(d => vis.yScale(d.y1));
-        vis.lineGenerator2 = d3.line().x(d => vis.xScale(d.x)).y(d => vis.yScale(d.y2));
 
         vis.renderVis();
     }
@@ -98,36 +81,68 @@ class LineChart {
     renderVis() {
         let vis = this;
 
+        const parseDate = d3.timeParse("%d-%b-%y");
 
-        const xScale = d3.scaleLinear()
-            .domain([0, 10]) 
+        vis.data = vis.data.sort((a, b) => parseDate(a.Year) - parseDate(b.Year));
+
+        const aggregatedData = {};
+
+        // Iterate through the data and aggregate values by date
+        vis.data.forEach(d => {
+            const date = d.date;
+            if (!aggregatedData[date]) {
+                aggregatedData[date] = { date: date, Unemployed: [], Employed: [] };
+            }
+            aggregatedData[date].Unemployed.push(d.Unemployed);
+            aggregatedData[date].Employed.push(d.Employed);
+        });
+
+        // Convert aggregated data into an array
+        const aggregatedArray = Object.values(aggregatedData);
+
+        // Calculate aggregate values for each date
+        aggregatedArray.forEach(d => {
+            d.Unemployed = d3.sum(d.Unemployed);
+            d.Employed = d3.sum(d.Employed);
+        });
+
+        aggregatedArray.forEach(d => {
+            if (isNaN(parseDate(d.Year))) {
+                console.log('Invalid date:', d.Year);
+            }
+        });
+
+        const yMax = d3.max(aggregatedArray, d => Math.max(d.Unemployed, d.Employed));
+
+        const xScale = d3.scaleTime()
+            .domain(d3.extent(aggregatedArray, d => parseDate(d.date)))
             .range([0, vis.width]);
 
         const yScale = d3.scaleLinear()
-            .domain([0, 100]) 
+            .domain([0, yMax])
             .range([vis.height, 0]);
 
         const line = d3.line()
-            .x((d, i) => xScale(i)) 
-            .y(d => yScale(d));
+            .x(d => xScale(parseDate(d.date)))
+            .y(d => yScale(d.Unemployed));
 
-        const data = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
-        const data2 = [20, 30, 40, 50, 60, 70, 80, 90, 80, 70];
+        const line2 = d3.line()
+            .x(d => xScale(parseDate(d.date)))
+            .y(d => yScale(d.Employed));
 
-        // Draw the line
         vis.chart.append("path")
-            .datum(data)
+            .datum(aggregatedArray)
             .attr("fill", "none")
             .attr("stroke", "steelblue")
             .attr("stroke-width", 2)
             .attr("d", line);
 
         vis.chart.append("path")
-            .datum(data2)
+            .datum(aggregatedArray)
             .attr("fill", "none")
             .attr("stroke", "orange")
             .attr("stroke-width", 2)
-            .attr("d", line);
+            .attr("d", line2);
 
         const xAxis = d3.axisBottom(xScale);
         const yAxis = d3.axisLeft(yScale);
@@ -141,12 +156,13 @@ class LineChart {
 
         vis.chart.append("text")
             .attr("text-anchor", "middle")
-            .attr("transform", `translate(${vis.width / 2}, ${vis.height + margin.top + 10})`)
+            .attr("transform", `translate(${vis.width / 2}, ${vis.height + vis.config.margin.top + 10})`)
             .text("X Axis Label");
 
         vis.chart.append("text")
             .attr("text-anchor", "middle")
-            .attr("transform", `translate(${-margin.left + 10}, ${vis.height / 2}) rotate(-90)`)
+            .attr("transform", `translate(${-vis.config.margin.left + 10}, ${vis.height / 2}) rotate(-90)`)
             .text("Y Axis Label");
     }
+
 }
