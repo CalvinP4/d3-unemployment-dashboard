@@ -11,7 +11,7 @@ class BarChart {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth || 800,
             containerHeight: _config.containerHeight || 440,
-            margin: _config.margin || { top: 5, right: 5, bottom: 20, left: 50 }
+            margin: _config.margin || { top: 5, right: 5, bottom: 20, left: 100 }
         };
         this.data = _data;
         this.colorScale = _colorScale;
@@ -63,7 +63,7 @@ class BarChart {
             .attr('class', 'axis-title')
             .attr('x', 0)
             .attr('y', 0)
-            .attr('dy', '.71em').text('Count');
+            .attr('dy', '.71em').text('Value');
     }
 
     /**
@@ -92,7 +92,7 @@ class BarChart {
         vis.xValue = d => d.data["group"];
         vis.yValue = d => d.data["metro"] + d.data["nonMetro"];
 
-        console.log("series",vis.series);
+        console.log("series", vis.series);
 
         vis.renderVis();
     }
@@ -114,20 +114,6 @@ class BarChart {
             return { group: g, metro: metroValue, nonMetro: nonMetroValue };
         });
 
-        // 2. Create scales
-        let x = d3.scaleBand()
-            .domain(group)
-            .range([0, vis.width])
-            .padding([0.2]);
-
-        let y = d3.scaleLinear()
-            .domain([0, 1000000000])
-            .range([vis.height, 0]);
-
-        let color = d3.scaleOrdinal()
-            .domain(["metro", "nonMetro"])
-            .range(["#d91f02", "#1b8e77"]);
-
         // 3. Create a stack generator
         let stack = d3.stack()
             .keys(['metro', 'nonMetro']);
@@ -135,34 +121,57 @@ class BarChart {
         // 4. Use the stack generator to process your data
         let series = stack(transformedData);
 
+        // Calculate the maximum value in your data
+        let maxVal = d3.max(series, function(series) {
+            return d3.max(series, function(d) { return d[1]; });
+        });
+
+        // 2. Create scales
+        let x = d3.scaleBand()
+            .domain(group)
+            .range([0, vis.width])
+            .padding([0.2]);
+
+        let y = d3.scaleLinear()
+            .domain([0, maxVal])
+            .range([vis.height, 0]);
+
+        let xAxis = d3.axisBottom(x);
+
+        let yAxis = d3.axisLeft(y).ticks(6);
+
+        let color = d3.scaleOrdinal()
+            .domain(["metro", "nonMetro"])
+            .range(["#d91f02", "#1b8e77"]);
+
+        // Create the x axis
+        vis.chart.append("g")
+            .attr('class', 'axis x-axis')
+            .attr("transform", "translate(0," + vis.height + ")")
+            .call(xAxis);
+
+        // Create the y axis
+        vis.chart.append("g")
+            .attr('class', 'axis y-axis')
+            .call(yAxis);
+
         // 5. Create the bars
         vis.chart.selectAll(".bar")
             .data(series)
             .enter().append("g")
-            .attr("fill", function (d) { 
-                return color(d.key); 
+            .attr("fill", function (d) {
+                return color(d.key);
             })
             .selectAll("rect")
             .data(function (d) { return d; })
             .enter().append("rect")
-            .attr("x", function (d) { 
-                return x(d.data.group); 
+            .attr("x", function (d) {
+                return x(d.data.group);
             })
             .attr("y", function (d) { return y(d[1]); })
             .attr("width", x.bandwidth())
-            .attr("height", function (d) { 
-                return y(d[0]) - y(d[1]); 
+            .attr("height", function (d) {
+                return y(d[0]) - y(d[1]);
             });
-
-        // Create the x axis
-        vis.svg.append("g")
-            .attr('class', 'axis x-axis')
-            .attr("transform", "translate(0," + vis.height + ")")
-            .call(vis.xAxis);
-
-        // Create the y axis
-        vis.svg.append("g")
-            .attr('class', 'axis y-axis')
-            .call(vis.yAxis);
     }
 }
