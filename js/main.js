@@ -21,8 +21,11 @@ d3.csv('data/FinalProjectOutput.csv').then(_data => {
 
     const colorScale = d3.scaleOrdinal().domain(isMetro).range(d3.schemeCategory10);
 
-    barchart = new BarChart({parentElement: '#barchart'},data, colorScale);
-    barchart.updateVis();
+    // barchart = new BarChart({parentElement: '#barchart'},data, colorScale);
+    // barchart.updateVis();
+
+    lineChart = new LineChart({parentElement: '#linechart'}, data, colorScale);
+    lineChart.updateVis();
 
     console.log(data);
 });

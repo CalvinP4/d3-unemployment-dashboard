@@ -83,10 +83,8 @@ class BarChart {
             return { group: g, metro: metroValue, nonMetro: nonMetroValue };
         });
 
-        // Create stack generator
         let stack = d3.stack().keys(['metro', 'nonMetro']);
 
-        // Generate series data
         vis.series = stack(transformedData);
 
         vis.xValue = d => d.data["group"];
