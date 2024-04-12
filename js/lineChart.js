@@ -59,11 +59,11 @@ class LineChart {
         vis.yAxisG = vis.chart.append('g')
             .attr('class', 'axis y-axis');
 
-        vis.svg.append('text')
-            .attr('class', 'axis-title')
-            .attr('x', 0)
-            .attr('y', 0)
-            .attr('dy', '.71em').text('Count');
+        // vis.svg.append('text')
+        //     .attr('class', 'axis-title')
+        //     .attr('x', 0)
+        //     .attr('y', 0)
+        //     .attr('dy', '.71em').text('Count');
     }
 
     /**
@@ -87,7 +87,6 @@ class LineChart {
 
         const aggregatedData = {};
 
-        // Iterate through the data and aggregate values by date
         vis.data.forEach(d => {
             const date = d.date;
             if (!aggregatedData[date]) {
@@ -97,10 +96,8 @@ class LineChart {
             aggregatedData[date].Employed.push(d.Employed);
         });
 
-        // Convert aggregated data into an array
         const aggregatedArray = Object.values(aggregatedData);
 
-        // Calculate aggregate values for each date
         aggregatedArray.forEach(d => {
             d.Unemployed = d3.mean(d.Unemployed);
             d.Employed = d3.mean(d.Employed);
