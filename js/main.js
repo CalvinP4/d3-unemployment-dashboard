@@ -11,21 +11,11 @@ d3.csv('data/FinalProjectOutput.csv').then(_data => {
         numericKeys.forEach(key => {
             d[key] = d[key] === "NA" ? null : +d[key];
         });
-
+        
         return d;
     }).filter(d => {
         return !Object.values(d).includes(null);
     });
-    const lineChartConfig = {
-        parentElement: "#linechart",
-        containerWidth: 600,
-        containerHeight: 400,
-        margin: { top: 30, right: 30, bottom: 60, left: 50 },
-    };
-
-    // Initialize bar chart
-    lineChart = new BarChart(lineChartConfig, data, colorScale);
-    lineChart.updateVis(); // Call updateVis first for the bar chart
 
     const isMetro = [...new Set(data.map(d => d.isMetro))];
 
@@ -33,6 +23,9 @@ d3.csv('data/FinalProjectOutput.csv').then(_data => {
 
     barchart = new BarChart({parentElement: '#barchart'},data, colorScale);
     barchart.updateVis();
+
+    lineChart = new LineChart({parentElement: '#linechart'}, data, colorScale);
+    lineChart.updateVis(); // Make sure to call updateVis to render the line chart
 
     console.log(data);
 });
