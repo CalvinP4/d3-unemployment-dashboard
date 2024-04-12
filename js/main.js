@@ -2,15 +2,15 @@ let data, barChart, lineChart;
 
 d3.csv('data/FinalProjectOutput.csv').then(_data => {
     data = _data.map(d => {
-        const keys = ['F1','case_id','state','isMetro',
-        'areaname','county','family_member_count','housing_cost',
+        const numericKeys = ['family_member_count','housing_cost',
         'food_cost','transportation_cost','healthcare_cost',
         'other_necessities_cost','childcare_cost','taxes',
-        'total_cost','median_family_income','date',
-        'State','Area_name','Civilian_labor_force','Employed','Unemployed',
-        'Unemployment_rate','Year'
-        ];
+        'total_cost','median_family_income', 'Civilian_labor_force','Employed','Unemployed',
+        'Unemployment_rate'];
 
+        numericKeys.forEach(key => {
+            d[key] = d[key] === "NA" ? null : +d[key];
+        });
 
         return d;
     }).filter(d => {
@@ -26,6 +26,13 @@ d3.csv('data/FinalProjectOutput.csv').then(_data => {
     // Initialize bar chart
     lineChart = new BarChart(lineChartConfig, data, colorScale);
     lineChart.updateVis(); // Call updateVis first for the bar chart
+
+    const isMetro = [...new Set(data.map(d => d.isMetro))];
+
+    const colorScale = d3.scaleOrdinal().domain(isMetro).range(d3.schemeCategory10);
+
+    barchart = new BarChart({parentElement: '#barchart'},data, colorScale);
+    barchart.updateVis();
 
     console.log(data);
 });
