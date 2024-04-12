@@ -26,9 +26,5 @@ d3.csv('data/FinalProjectOutput.csv').then(_data => {
 
     lineChart = new LineChart({parentElement: '#linechart'}, data, colorScale);
     lineChart.updateVis();
-
-    lineChart = new LineChart({parentElement: '#linechart'}, data, colorScale);
-    lineChart.updateVis(); // Make sure to call updateVis to render the line chart
-
     console.log(data);
 });
