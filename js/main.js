@@ -11,21 +11,31 @@ d3.csv('data/FinalProjectOutput.csv').then(_data => {
         'Unemployment_rate','Year'
         ];
 
+        // Create an object with keys
+        const obj = {};
+        keys.forEach(key => {
+            obj[key] = d[key];
+        });
 
-        return d;
+        return obj;
     }).filter(d => {
         return !Object.values(d).includes(null);
     });
-    const lineChartConfig = {
-        parentElement: "#linechart",
-        containerWidth: 600,
-        containerHeight: 400,
-        margin: { top: 30, right: 30, bottom: 60, left: 50 },
-    };
 
-    // Initialize bar chart
-    lineChart = new barChart(lineChartConfig, data, colorScale);
-    lineChart.updateVis(); // Call updateVis first for the bar chart
+    // Define color scale
+    colorScale = d3.scaleOrdinal()
+        .domain(data.map(d => d.isMetro))
+        .range(d3.schemeCategory10);
+
+    // Create a LineChart instance
+    lineChart = new LineChart({
+        parentElement: '#line-chart-container', // Specify the parent element where the chart will be appended
+        containerWidth: 800, // Specify the width of the chart container
+        containerHeight: 500, // Specify the height of the chart container
+        margin: { top: 30, right: 30, bottom: 30, left: 50 } // Specify the margin of the chart
+    });
+
+    lineChart.updateData(data.map(d => d.isMetro));
 
     console.log(data);
 });
