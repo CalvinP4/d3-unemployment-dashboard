@@ -11,7 +11,7 @@ class LineChart {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth || 800,
             containerHeight: _config.containerHeight || 440,
-            margin: _config.margin || { top: 5, right: 5, bottom: 20, left: 100 }
+            margin: _config.margin || { top: 5, right: 5, bottom: 60, left: 100 }
         };
         this.data = _data;
         this.colorScale = _colorScale;
@@ -102,14 +102,8 @@ class LineChart {
 
         // Calculate aggregate values for each date
         aggregatedArray.forEach(d => {
-            d.Unemployed = d3.sum(d.Unemployed);
-            d.Employed = d3.sum(d.Employed);
-        });
-
-        aggregatedArray.forEach(d => {
-            if (isNaN(parseDate(d.Year))) {
-                console.log('Invalid date:', d.Year);
-            }
+            d.Unemployed = d3.mean(d.Unemployed);
+            d.Employed = d3.mean(d.Employed);
         });
 
         const yMax = d3.max(aggregatedArray, d => Math.max(d.Unemployed, d.Employed));
@@ -156,13 +150,13 @@ class LineChart {
 
         vis.chart.append("text")
             .attr("text-anchor", "middle")
-            .attr("transform", `translate(${vis.width / 2}, ${vis.height + vis.config.margin.top + 10})`)
-            .text("X Axis Label");
+            .attr("transform", `translate(${vis.width / 2}, ${vis.height + vis.config.margin.top + 30})`)
+            .text("Year");
 
         vis.chart.append("text")
             .attr("text-anchor", "middle")
-            .attr("transform", `translate(${-vis.config.margin.left + 10}, ${vis.height / 2}) rotate(-90)`)
-            .text("Y Axis Label");
+            .attr("transform", `translate(${-vis.config.margin.left + 40}, ${vis.height / 2}) rotate(-90)`)
+            .text("Count of people");
     }
 
 }
