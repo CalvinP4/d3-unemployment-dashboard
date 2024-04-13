@@ -116,8 +116,8 @@ class BarChart {
 
         let series = stack(transformedData);
 
-        let maxVal = d3.max(series, function(series) {
-            return d3.max(series, function(d) { return d[1]; });
+        let maxVal = d3.max(series, function (series) {
+            return d3.max(series, function (d) { return d[1]; });
         });
 
         let x = d3.scaleBand()
