@@ -4,8 +4,78 @@ body {
     font-family: "Oswald", sans-serif;
     font-size: 13px;
     padding: 30px;
-    background: #f7f7f7;
+    background: #a6ddd8;
 }
+
+#title {
+    height: 5em;
+    background: #6b6b6b;
+    box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 50px;
+}
+
+#filter-panel {
+    position: absolute;
+    width: 20em;
+    right: 0;
+    top: 150px;
+    background: #6b6b6b;
+    height: 50em;
+    box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+
+#linechart {
+    background: white;
+    padding: 2em;
+    height: 30em;
+    margin-left: 11px;
+    width: 70em;
+    box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    left: 0;
+    top: 50em;
+}
+
+#textbox {
+    background: white;
+    padding: 2em;
+    height: 30em;
+    margin-left: 11px;
+    width: 70em;
+    box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    left: 80em;
+    top: 50em;
+}
+
+
+#barchart {
+    background: white;
+    padding: 2em;
+    height: 35em;
+    margin-left: 11px;
+    width: 70em;
+    box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    left: 0;
+    top: 10em;
+}
+
+#choroplethchart {
+    background: white;
+    padding: 2em;
+    height: 35em;
+    margin-left: 11px;
+    width: 70em;
+    box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    left: 80em;
+    top: 10em;
+}
+
+#textbox
+
 
 .container {
     display: flex;
