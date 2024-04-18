@@ -26,5 +26,8 @@ d3.csv('data/FinalProjectOutput.csv').then(_data => {
 
     lineChart = new LineChart({ parentElement: '#linechart' }, data, colorScale);
     lineChart.updateVis();
+
+    choropleth = new ChoroplethChart({ parentElement: '#choroplethchart' }, data, colorScale);
+    choropleth.updateVis();
     console.log(data);
 });
