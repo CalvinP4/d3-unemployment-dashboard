@@ -160,31 +160,38 @@ class LineChart {
 
 
         //dispatcher code for filter states of united states
-        const stateRadioButtons = document.querySelectorAll('input[name="North carolina"]');
         const dispatcher = d3.dispatch('filterStates');
-        stateRadioButtons.forEach(button => {
-            button.addEventListener('change', () => {
-                const selectedStates = [];
-                stateRadioButtons.forEach(button => {
-                    if (button.checked) {
-                        selectedStates.push(button.value);
-                    }
-                });
-                dispatcher.call('filterStates', selectedStates);
-            });
-        });
 
- dispatcher.on('filterStates', selectedStates => {
-    if (selectedStates.length === 0) {
-        LineChartinechart.data = data;
-        parallelCoordinates.data = data;
-    } else {
-        Linechart.data = data.filter(d => selectedStates.includes(d.State));
-        parallelCoordinates.data = data.filter(d => selectedStates.includes(d.State));
-    }
-    Linechart.updateVis();
-    parallelCoordinates.updateVis();
-});
+        const updateSelectedStates = (buttonGroup) => {
+            const selectedStates = [];
+            buttonGroup.forEach(button => {
+                if (button.checked) {
+                    selectedStates.push(button.value);
+                }
+            });
+            dispatcher.call('filterStates', null, selectedStates); // null is used for the 'this' context
+        };
+        
+        // Assuming the name of the radio buttons is correctly specified as 'state'
+        const stateRadioButtons = document.querySelectorAll('input[name="state"]');
+        stateRadioButtons.forEach(button => {
+            button.addEventListener('change', () => updateSelectedStates(stateRadioButtons));
+        });
+        
+        // Dispatcher event listener
+        dispatcher.on('filterStates', selectedStates => {
+            // Assuming 'lineChart' and 'parallelCoordinates' are correctly named instances of your charts
+            if (selectedStates.length === 0) {
+                LineChart.data = originalData; // Make sure you have a reference to the original data
+                parallelCoordinates.data = originalData;
+            } else {
+                LineChart.data = originalData.filter(d => selectedStates.includes(d.State));
+                parallelCoordinates.data = originalData.filter(d => selectedStates.includes(d.State));
+            }
+            LineChart.updateVis();
+            parallelCoordinates.updateVis();
+        });
+            
 
 
 
