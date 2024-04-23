@@ -144,7 +144,7 @@ class ChoroplethChart {
             );
 
             let projection = d3.geoEquirectangular();
-            projection.fitSize([vis.width, vis.height], data[0]);
+            projection.fitSize([vis.width*2.5, vis.height*2], data[0]);
 
             let generator = d3.geoPath().projection(projection);
 
@@ -155,7 +155,7 @@ class ChoroplethChart {
             ];
 
             let svg = d3.select("#mapSVG")
-                .attr('transform', 'translate(50, 50)');
+                .attr('transform', 'translate(10, -450)');
 
             let plot = svg.append("g")
                 .attr('transform', 'translate(0,0)');

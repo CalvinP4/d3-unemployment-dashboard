@@ -101,6 +101,10 @@ class BarChart {
     renderVis() {
         let vis = this;
 
+        vis.chart.selectAll("path").remove();
+        vis.chart.selectAll("g").remove();
+        vis.chart.selectAll("text").remove();
+
         const group = ['transportation_cost', 'food_cost', 'healthcare_cost', 'childcare_cost', 'taxes'];
 
         let transformedData = group.map(g => {

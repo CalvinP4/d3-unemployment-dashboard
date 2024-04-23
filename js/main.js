@@ -1,5 +1,7 @@
 let data, barChart, lineChart;
 
+const dispatcher = d3.dispatch('stateChange');
+
 d3.csv('data/FinalProjectOutput.csv').then(_data => {
     data = _data.map(d => {
         const numericKeys = ['family_member_count', 'housing_cost',
@@ -21,13 +23,26 @@ d3.csv('data/FinalProjectOutput.csv').then(_data => {
 
     const colorScale = d3.scaleOrdinal().domain(isMetro).range(d3.schemeCategory10);
 
-    barchart = new BarChart({ parentElement: '#barchart' }, data, colorScale);
+    barchart = new BarChart({ parentElement: '#barchart' }, data, colorScale, dispatcher);
     barchart.updateVis();
 
-    lineChart = new LineChart({ parentElement: '#linechart' }, data, colorScale);
+    lineChart = new LineChart({ parentElement: '#linechart' }, data, colorScale, dispatcher);
     lineChart.updateVis();
 
     choropleth = new ChoroplethChart({ parentElement: '#choroplethchart' }, data, colorScale);
     choropleth.updateVis();
     console.log(data);
+});
+
+d3.select("#filter-button").on("click", function() {
+    dispatcher.call("stateChange", this);
+});
+
+
+dispatcher.on('stateChange', state => {
+    barchart.data = data.filter(d => d.state === "WA");
+    lineChart.data = data.filter(d => d.state === "WA");
+
+    barchart.updateVis();
+    lineChart.updateVis();
 });
