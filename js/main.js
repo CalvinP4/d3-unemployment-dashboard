@@ -29,7 +29,7 @@ d3.csv('data/FinalProjectOutput.csv').then(_data => {
     lineChart = new LineChart({ parentElement: '#linechart' }, data, colorScale, dispatcher);
     lineChart.updateVis();
 
-    choropleth = new ChoroplethChart({ parentElement: '#choroplethchart' }, data, colorScale);
+    choropleth = new ChoroplethChart({ parentElement: '#choroplethchart' }, data, colorScale, dispatcher);
     choropleth.updateVis();
     console.log(data);
 });
@@ -40,8 +40,8 @@ d3.select("#filter-button").on("click", function() {
 
 
 dispatcher.on('stateChange', state => {
-    barchart.data = data.filter(d => d.state === "WA");
-    lineChart.data = data.filter(d => d.state === "WA");
+    barchart.data = data.filter(d => d.state === state);
+    lineChart.data = data.filter(d => d.state === state);
 
     barchart.updateVis();
     lineChart.updateVis();

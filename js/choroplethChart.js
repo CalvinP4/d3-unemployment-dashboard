@@ -51,6 +51,59 @@ const stateNames = {
     'WY': 'Wyoming'
 };
 
+const stateCodes = {
+    'Alabama': 'AL',
+    'Alaska': 'AK',
+    'Arizona': 'AZ',
+    'Arkansas': 'AR',
+    'California': 'CA',
+    'Colorado': 'CO',
+    'Connecticut': 'CT',
+    'Delaware': 'DE',
+    'Florida': 'FL',
+    'Georgia': 'GA',
+    'Hawaii': 'HI',
+    'Idaho': 'ID',
+    'Illinois': 'IL',
+    'Indiana': 'IN',
+    'Iowa': 'IA',
+    'Kansas': 'KS',
+    'Kentucky': 'KY',
+    'Louisiana': 'LA',
+    'Maine': 'ME',
+    'Maryland': 'MD',
+    'Massachusetts': 'MA',
+    'Michigan': 'MI',
+    'Minnesota': 'MN',
+    'Mississippi': 'MS',
+    'Missouri': 'MO',
+    'Montana': 'MT',
+    'Nebraska': 'NE',
+    'Nevada': 'NV',
+    'New Hampshire': 'NH',
+    'New Jersey': 'NJ',
+    'New Mexico': 'NM',
+    'New York': 'NY',
+    'North Carolina': 'NC',
+    'North Dakota': 'ND',
+    'Ohio': 'OH',
+    'Oklahoma': 'OK',
+    'Oregon': 'OR',
+    'Pennsylvania': 'PA',
+    'Rhode Island': 'RI',
+    'South Carolina': 'SC',
+    'South Dakota': 'SD',
+    'Tennessee': 'TN',
+    'Texas': 'TX',
+    'Utah': 'UT',
+    'Vermont': 'VT',
+    'Virginia': 'VA',
+    'Washington': 'WA',
+    'West Virginia': 'WV',
+    'Wisconsin': 'WI',
+    'Wyoming': 'WY'
+};
+
 
 class ChoroplethChart {
 
@@ -64,7 +117,7 @@ class ChoroplethChart {
         this.config = {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth || 1000,
-            containerHeight: _config.containerHeight || 740,
+            containerHeight: _config.containerHeight || 700,
             margin: _config.margin || { top: 5, right: 5, bottom: 20, left: 100 }
         };
         this.data = _data;
@@ -144,7 +197,7 @@ class ChoroplethChart {
             );
 
             let projection = d3.geoEquirectangular();
-            projection.fitSize([vis.width*2.5, vis.height*2], data[0]);
+            projection.fitSize([vis.width * 2.5, vis.height * 2.5], data[0]);
 
             let generator = d3.geoPath().projection(projection);
 
@@ -155,7 +208,7 @@ class ChoroplethChart {
             ];
 
             let svg = d3.select("#mapSVG")
-                .attr('transform', 'translate(10, -450)');
+                .attr('transform', 'translate(10, -650)');
 
             let plot = svg.append("g")
                 .attr('transform', 'translate(0,0)');
@@ -170,7 +223,25 @@ class ChoroplethChart {
                 .style("fill", (d) => {
                     return color[0](stateTaxes.get(d.properties.NAME))
                 })
-                .attr('stroke-width', 1);
+                .attr('stroke-width', 1)
+                .on('click', function (e) {
+                    console.log(e.currentTarget.__data__.properties.NAME);
+                    vis.dispatcher.call('stateChange', this, stateCodes[e.currentTarget.__data__.properties.NAME]);
+                });;
+
+            plot.selectAll('text')
+                .data(data[0].features)
+                .enter()
+                .append('text')
+                .attr('transform', function (d) {
+                    let centroid = generator.centroid(d);
+                    return `translate(${centroid[0]}, ${centroid[1]})`;
+                })
+                .text(function (d) {
+                    return d.properties.NAME;
+                })
+                .attr('font-size', '8px')
+                .attr('text-anchor', 'middle');
 
         });
 
