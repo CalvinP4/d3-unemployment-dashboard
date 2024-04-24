@@ -35,7 +35,11 @@ d3.csv('data/FinalProjectOutput.csv').then(_data => {
 });
 
 d3.select("#filter-button").on("click", function() {
-    dispatcher.call("stateChange", this);
+    barchart.data = data;
+    lineChart.data = data;
+
+    barchart.updateVis();
+    lineChart.updateVis();
 });
 
 

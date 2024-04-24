@@ -139,7 +139,7 @@ class BarChart {
 
         let color = d3.scaleOrdinal()
             .domain(["metro", "nonMetro"])
-            .range(["#d91f02", "#1b8e77"]);
+            .range(["#e7585b", "#f78e39"]);
 
         vis.chart.append("g")
             .attr('class', 'axis x-axis')

@@ -27,7 +27,26 @@
 
     <div id="filter-panel">
         <h1>Filter Panel</h1>
-        <button id="filter-button">Filter</button>
+        <button id="filter-button">Reset filters</button>
+        <div id="toggle-panel">
+            <input type="checkbox" id="metro-toggle" name="metro-toggle">
+            <label for="metro-toggle">Metro </label>
+            <div id="toggle-panel">
+                <input type="checkbox" id="non-metro-toggle" name="metro-toggle">
+                <label for="metro-toggle">Non-Metro</label>
+            </div>
+        </div>
+        <div id="legend-panel">
+            <h2>Legend</h2>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #e7585b;"></span>
+                <span class="legend-label">Metro</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #f78e39;"></span>
+                <span class="legend-label">Non-Metro</span>
+            </div>
+        </div>
     </div>
 
     <script src="js/d3.v7.min.js"></script>
