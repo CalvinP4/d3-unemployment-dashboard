@@ -9,8 +9,8 @@ class LineChart {
     constructor(_config, _data, _colorScale, _dispatcher) {
         this.config = {
             parentElement: _config.parentElement,
-            containerWidth: _config.containerWidth || 800,
-            containerHeight: _config.containerHeight || 440,
+            containerWidth: _config.containerWidth || 600,
+            containerHeight: _config.containerHeight || 220,
             margin: _config.margin || { top: 5, right: 5, bottom: 60, left: 100 }
         };
         this.data = _data;

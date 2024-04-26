@@ -7,8 +7,16 @@ body {
     background: #efeef4;
 }
 
+#container {
+    position: relative;
+    min-height: 2000px;
+    /* Adjust this value as needed */
+    min-width: 2000px;
+}
+
+
 #title {
-    position: fixed;
+    position: absolute;
     height: 5em;
     width: 150em;
     background: #b1bbd9;
@@ -21,12 +29,17 @@ body {
 #filter-panel {
     position: absolute;
     width: 20em;
-    right: 0;
     top: 150px;
     background: #b1bbd9;
     height: 50em;
     box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
     padding: 2em;
+    /* Adjust left property to leave space for the scroll */
+    /* left: calc(50vw + 50%); */
+    /* Adjust right property to position it relative to #container */
+    right: calc(50vw - 50%);
+    /* Use overflow-y to ensure vertical scroll doesn't affect layout */
+    overflow-y: auto;
 }
 
 .legend-color {
@@ -38,34 +51,35 @@ body {
 #linechart {
     background: white;
     padding: 2em;
-    height: 30em;
+    height: 32em;
     margin-left: 11px;
-    width: 70em;
+    width: 60em;
     box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
     position: absolute;
     left: 0;
-    top: 50em;
+    top: 55em;
 }
 
 #textbox {
     background: white;
     padding: 2em;
-    height: 30em;
+    height: 32em;
     margin-left: 11px;
-    width: 70em;
+    width: 60em;
     box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
     position: absolute;
     left: 80em;
-    top: 50em;
+    top: 55em;
 }
 
 
 #barchart {
     background: white;
     padding: 2em;
-    height: 35em;
+    height: 32em;
     margin-left: 11px;
-    width: 70em;
+    margin-bottom: 16px;
+    width: 60em;
     box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
     position: absolute;
     left: 0;
@@ -75,19 +89,16 @@ body {
 #choroplethchart {
     background: white;
     padding: 2em;
-    height: 35em;
+    height: 32em;
     margin-left: 11px;
-    width: 70em;
+    width: 60em;
     box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
     position: absolute;
     left: 80em;
     top: 10em;
 }
 
-#textbox
-
-
-.container {
+#textbox .container {
     display: flex;
 }
 
@@ -104,4 +115,20 @@ h1 {
 .axis-title {
     font-size: 13px;
     fill: #888;
+}
+
+
+.flex-container {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.flex-item {
+    flex: 1;
+    width: calc(33.33% - 20px);
+    /* Adjust margin */
+    margin: 10px;
+    /* Adjust margin */
+    background-color: #f0f0f0;
+    padding: 20px;
 }

@@ -116,8 +116,8 @@ class ChoroplethChart {
     constructor(_config, _data, _colorScale, _dispatcher) {
         this.config = {
             parentElement: _config.parentElement,
-            containerWidth: _config.containerWidth || 1000,
-            containerHeight: _config.containerHeight || 700,
+            containerWidth: _config.containerWidth || 600,
+            containerHeight: _config.containerHeight || 220,
             margin: _config.margin || { top: 5, right: 5, bottom: 20, left: 100 }
         };
         this.data = _data;
@@ -165,12 +165,6 @@ class ChoroplethChart {
 
         vis.yAxisG = vis.chart.append('g')
             .attr('class', 'axis y-axis');
-
-        vis.svg.append('text')
-            .attr('class', 'axis-title')
-            .attr('x', 0)
-            .attr('y', 0)
-            .attr('dy', '.71em').text('Value');
     }
 
     /**
@@ -197,7 +191,7 @@ class ChoroplethChart {
             );
 
             let projection = d3.geoEquirectangular();
-            projection.fitSize([vis.width * 2.5, vis.height * 2.5], data[0]);
+            projection.fitSize([vis.width*5, vis.height*5], data[0]);
 
             let generator = d3.geoPath().projection(projection);
 
@@ -208,7 +202,7 @@ class ChoroplethChart {
             ];
 
             let svg = d3.select("#mapSVG")
-                .attr('transform', 'translate(10, -650)');
+                .attr('transform', 'translate(10, -300)');
 
             let plot = svg.append("g")
                 .attr('transform', 'translate(0,0)');
@@ -238,13 +232,10 @@ class ChoroplethChart {
                     return `translate(${centroid[0]}, ${centroid[1]})`;
                 })
                 .text(function (d) {
-                    return d.properties.NAME;
+                    return stateCodes[d.properties.NAME];
                 })
                 .attr('font-size', '8px')
                 .attr('text-anchor', 'middle');
-
         });
-
-
     }
 }
