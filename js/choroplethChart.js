@@ -144,27 +144,6 @@ class ChoroplethChart {
 
         vis.chart = vis.svg.append('g')
             .attr('transform', `translate(${vis.config.margin.left},${vis.config.margin.top})`);
-
-        vis.xScale = d3.scaleBand()
-            .range([0, vis.width])
-            .paddingInner(0.2);
-
-        vis.yScale = d3.scaleLinear()
-            .range([vis.height, 0]);
-
-        vis.xAxis = d3.axisBottom(vis.xScale)
-            .tickSizeOuter(0);
-
-        vis.yAxis = d3.axisLeft(vis.yScale)
-            .ticks(6)
-            .tickSizeOuter(0);
-
-        vis.xAxisG = vis.chart.append('g')
-            .attr('class', 'axis x-axis')
-            .attr('transform', `translate(0,${vis.height})`);
-
-        vis.yAxisG = vis.chart.append('g')
-            .attr('class', 'axis y-axis');
     }
 
     /**
@@ -191,7 +170,7 @@ class ChoroplethChart {
             );
 
             let projection = d3.geoEquirectangular();
-            projection.fitSize([vis.width*5, vis.height*5], data[0]);
+            projection.fitSize([vis.width*4, vis.height*5], data[0]);
 
             let generator = d3.geoPath().projection(projection);
 

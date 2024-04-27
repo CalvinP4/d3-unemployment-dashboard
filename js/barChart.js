@@ -10,8 +10,8 @@ class BarChart {
         this.config = {
             parentElement: _config.parentElement,
             containerWidth: _config.containerWidth || 600,
-            containerHeight: _config.containerHeight || 220,
-            margin: _config.margin || { top: 5, right: 5, bottom: 20, left: 100 }
+            containerHeight: _config.containerHeight || 300,
+            margin: _config.margin || { top: 5, right: 5, bottom: 30, left: 100 }
         };
         this.data = _data;
         this.colorScale = _colorScale;
@@ -58,12 +58,6 @@ class BarChart {
 
         vis.yAxisG = vis.chart.append('g')
             .attr('class', 'axis y-axis');
-
-        vis.svg.append('text')
-            .attr('class', 'axis-title')
-            .attr('x', 0)
-            .attr('y', 0)
-            .attr('dy', '.71em').text('Value');
     }
 
     /**
@@ -142,12 +136,10 @@ class BarChart {
             .range(["#e7585b", "#f78e39"]);
 
         vis.chart.append("g")
-            .attr('class', 'axis x-axis')
             .attr("transform", "translate(0," + vis.height + ")")
             .call(xAxis);
 
         vis.chart.append("g")
-            .attr('class', 'axis y-axis')
             .call(yAxis);
 
         // Create the bars
@@ -168,5 +160,11 @@ class BarChart {
             .attr("height", function (d) {
                 return y(d[0]) - y(d[1]);
             });
+
+        vis.chart.append("text")
+            .attr("text-anchor", "middle")
+            .attr("transform", `translate(${-vis.config.margin.left + 20}, ${vis.height / 2}) rotate(-90)`)
+            .text("Value ($)");
+
     }
 }

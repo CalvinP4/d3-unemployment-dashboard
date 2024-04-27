@@ -7,39 +7,28 @@ body {
     background: #efeef4;
 }
 
-#container {
-    position: relative;
-    min-height: 2000px;
-    /* Adjust this value as needed */
-    min-width: 2000px;
-}
-
-
 #title {
-    position: absolute;
     height: 5em;
-    width: 150em;
     background: #b1bbd9;
     box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
-    margin-bottom: 50px;
+    margin-bottom: 16px;
     padding-top: 8px;
     padding-left: 8px;
 }
 
-#filter-panel {
-    position: absolute;
-    width: 20em;
-    top: 150px;
+#filter-container {
+    padding: 8px;
     background: #b1bbd9;
-    height: 50em;
+    height: 10em;
     box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+#filter-panel {
     padding: 2em;
-    /* Adjust left property to leave space for the scroll */
-    /* left: calc(50vw + 50%); */
-    /* Adjust right property to position it relative to #container */
-    right: calc(50vw - 50%);
-    /* Use overflow-y to ensure vertical scroll doesn't affect layout */
-    overflow-y: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .legend-color {
@@ -52,24 +41,16 @@ body {
     background: white;
     padding: 2em;
     height: 32em;
-    margin-left: 11px;
     width: 60em;
     box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
-    position: absolute;
-    left: 0;
-    top: 55em;
 }
 
 #textbox {
     background: white;
     padding: 2em;
     height: 32em;
-    margin-left: 11px;
     width: 60em;
     box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
-    position: absolute;
-    left: 80em;
-    top: 55em;
 }
 
 
@@ -77,29 +58,18 @@ body {
     background: white;
     padding: 2em;
     height: 32em;
-    margin-left: 11px;
     margin-bottom: 16px;
     width: 60em;
     box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
-    position: absolute;
-    left: 0;
-    top: 10em;
 }
 
 #choroplethchart {
     background: white;
     padding: 2em;
     height: 32em;
-    margin-left: 11px;
     width: 60em;
     box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
-    position: absolute;
-    left: 80em;
-    top: 10em;
-}
-
-#textbox .container {
-    display: flex;
+    margin-bottom: 16px;
 }
 
 h1 {
@@ -121,14 +91,26 @@ h1 {
 .flex-container {
     display: flex;
     flex-wrap: wrap;
+    top: 16px;
 }
 
 .flex-item {
     flex: 1;
     width: calc(33.33% - 20px);
-    /* Adjust margin */
     margin: 10px;
-    /* Adjust margin */
     background-color: #f0f0f0;
     padding: 20px;
+}
+
+#toggle-panel, #legend-panel {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.legend-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-right: 20px;
 }
