@@ -170,7 +170,7 @@ class ChoroplethChart {
             );
 
             let projection = d3.geoEquirectangular();
-            projection.fitSize([vis.width*4, vis.height*5], data[0]);
+            projection.fitSize([vis.width * 4, vis.height * 5], data[0]);
 
             let generator = d3.geoPath().projection(projection);
 
@@ -198,7 +198,6 @@ class ChoroplethChart {
                 })
                 .attr('stroke-width', 1)
                 .on('click', function (e) {
-                    console.log(e.currentTarget.__data__.properties.NAME);
                     vis.dispatcher.call('stateChange', this, stateCodes[e.currentTarget.__data__.properties.NAME]);
                 });;
 
@@ -215,6 +214,48 @@ class ChoroplethChart {
                 })
                 .attr('font-size', '8px')
                 .attr('text-anchor', 'middle');
+
+            let groupedData = d3.group(vis.data, d => stateNames[d.state], d => d.isMetro);
+
+            let stateTaxesBreakup = new Map(
+                Array.from(groupedData, ([state, metroData]) => [
+                    state,
+                    {
+                        metro: d3.sum(Array.from(metroData.get('True') || [], d => d.taxes)),
+                        nonMetro: d3.sum(Array.from(metroData.get('False') || [], d => d.taxes))
+                    }
+                ])
+            );
+
+
+            let pie = d3.pie().value(d => d[1]);
+
+            let colorScale = d3.scaleOrdinal()
+                .domain(['metro', 'nonMetro'])
+                .range(['#e7585b', '#f78e39']);
+
+            plot.selectAll('.pie-chart')
+                .data(data[0].features)
+                .enter()
+                .append('g')
+                .attr('class', 'pie-chart')
+                .attr('transform', function (d) {
+                    let centroid = generator.centroid(d);
+                    return `translate(${centroid[0]}, ${centroid[1]})`;
+                })
+                .each(function (d) {
+                    let pieData = pie(Object.entries(stateTaxesBreakup.get(d.properties.NAME) || {}));
+                    d3.select(this).selectAll('path')
+                        .data(pieData)
+                        .enter()
+                        .append('path')
+                        .attr('d', d3.arc().innerRadius(0).outerRadius(10)) // Adjust the radius as needed
+                        .attr('fill', (d) => {
+                            return colorScale(d.data[0])
+                        });
+                });
         });
+
+
     }
 }
