@@ -32,7 +32,6 @@ d3.csv('data/FinalProjectOutput.csv').then(_data => {
 
     choropleth = new ChoroplethChart({ parentElement: '#choroplethchart' }, data, colorScale, dispatcher);
     choropleth.updateVis();
-    console.log(data);
 });
 
 d3.select("#filter-button").on("click", function () {

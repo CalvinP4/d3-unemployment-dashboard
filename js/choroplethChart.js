@@ -227,12 +227,27 @@ class ChoroplethChart {
                 ])
             );
 
+            let temp = Array.from(groupedData, ([state, metroData]) => [
+                state,
+                {
+                    metro: d3.sum(Array.from(metroData.get('True') || [], d => d.taxes)),
+                    nonMetro: d3.sum(Array.from(metroData.get('False') || [], d => d.taxes))
+                }
+            ])
+
 
             let pie = d3.pie().value(d => d[1]);
 
             let colorScale = d3.scaleOrdinal()
                 .domain(['metro', 'nonMetro'])
                 .range(['#e7585b', '#f78e39']);
+
+            let radiusScale = d3.scaleLinear()
+                .domain([d3.min(temp, d => {
+                    return d[1].metro + d[1].nonMetro
+                }), d3.max(temp, d => d[1].metro + d[1].nonMetro)])
+                .range([5, 20]);
+
 
             plot.selectAll('.pie-chart')
                 .data(data[0].features)
@@ -245,11 +260,17 @@ class ChoroplethChart {
                 })
                 .each(function (d) {
                     let pieData = pie(Object.entries(stateTaxesBreakup.get(d.properties.NAME) || {}));
+                    let radius;
+                    if (pieData.length >= 2) {
+                        radius = pieData[0].data[1] + pieData[1].data[1];
+                    } 
                     d3.select(this).selectAll('path')
                         .data(pieData)
                         .enter()
                         .append('path')
-                        .attr('d', d3.arc().innerRadius(0).outerRadius(10)) // Adjust the radius as needed
+                        .attr('d', d3.arc().innerRadius(0).outerRadius(d => {
+                            return radiusScale(radius);
+                        }))
                         .attr('fill', (d) => {
                             return colorScale(d.data[0])
                         });
