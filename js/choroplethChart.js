@@ -165,9 +165,12 @@ class ChoroplethChart {
         let mapCoordinateData = d3.json('data/USAMap.json');
 
         Promise.all([mapCoordinateData]).then(function (data) {
-            let stateTaxes = new Map(
-                vis.data.map(d => [stateNames[d.state], d.taxes])
-            );
+            let stateTaxes = new Map();
+            vis.data.forEach(d => {
+                let state = stateNames[d.state];
+                let tax = d.taxes;
+                stateTaxes.set(state, (stateTaxes.get(state) || 0) + tax);
+            });
 
             let projection = d3.geoEquirectangular();
             projection.fitSize([vis.width * 4, vis.height * 5], data[0]);
@@ -176,7 +179,7 @@ class ChoroplethChart {
 
             let color = [
                 d3.scaleSequential()
-                    .domain([1, 10000])
+                    .domain([1, 10000000])
                     .interpolator(d3.interpolateBlues),
             ];
 
@@ -199,7 +202,7 @@ class ChoroplethChart {
                 .attr('stroke-width', 1)
                 .on('click', function (e) {
                     vis.dispatcher.call('stateChange', this, stateCodes[e.currentTarget.__data__.properties.NAME]);
-                });;
+                });
 
             plot.selectAll('text')
                 .data(data[0].features)
@@ -263,7 +266,7 @@ class ChoroplethChart {
                     let radius;
                     if (pieData.length >= 2) {
                         radius = pieData[0].data[1] + pieData[1].data[1];
-                    } 
+                    }
                     d3.select(this).selectAll('path')
                         .data(pieData)
                         .enter()
